@@ -74,8 +74,7 @@ cd docker-wireguard-hub
 
 ### 3. Choose one of the following installation methods:
 
-
-#### A: Quick Start (automated)
+#### A: 🚀 Quick Start (automated)
 
 Recommended for fresh VPS installations. This script handles the full lifecycle: installs Docker, auto-detects your Public IP, updates configuration, starts the container, and applies network patches.
 
@@ -95,7 +94,9 @@ Or copy the configuration file to your device
 ./wireguard.sh conf-file 1
 ```
 
-#### B: Manual / Modular Installation
+---
+
+#### B: 🛠️ Manual / Modular Installation
 
 Recommended if you want full control and customization
 
@@ -111,7 +112,7 @@ sudo ./scripts/basic-install.sh
 
 Edit the compose file to set your `SERVERURL` (IP or Domain), `INTERNAL_SUBNET`, `PEERS`, `PEERDNS`, `TZ` and so more...
 
-You can check the [image documentation](https://github.com/linuxserver/docker-wireguard).
+You can take a quick look at the [configuration section](#configuration) below or check the [image documentation](https://github.com/linuxserver/docker-wireguard).
 
 ```bash
 nano docker-compose.yml
@@ -123,22 +124,20 @@ Start the container to generate keys and configuration files. Once the container
 
 ```bash
 ./wireguard.sh start
+
+# Wait for config generation
 while [ ! -f "./config/wg_confs/wg0.conf" ]; do
     sleep 1
 done
+
+# Apply fixes
 sudo ./scripts/fix-vps-net.sh
 ./wireguard.sh restart
 ```
 
 ##### 4. Connect your devices
 
-Finally restart the container to apply the new MTU rules settings.
-
-```bash
-./wireguard.sh restart
-```
-
-Now you can connect your devices.
+Finally you can connect your devices.
 
 ```bash
 # Get QR
@@ -152,22 +151,15 @@ Now you can connect your devices.
 
 The WireGuard interface is configured via environment variables in `docker-compose.yml`:
 
-- `SERVERPORT`: WireGuard listening port (default: 51820)
-- `PEERS`: Number of peer configurations to generate
-- `ALLOWEDIPS`: IP range for routing (default: 0.0.0.0/0)
-- `PERSISTENTKEEPALIVE_PEERS`: Keepalive interval (default: 25s)
-
-## Project Structure
-
-```
-.
-├── docker-compose.yml           # Main Docker configuration
-├── wireguard.sh                 # Launcher script
-├── scripts/
-│   ├── basic-instalation.sh     # Docker & system setup
-│   ├── fix-vps-net.sh           # Network & firewall configuration
-│   └── check-network-config.sh  # Verify setup
-├── clients/
-│   └── wg0-client.conf.template # Client config template
-└── config/                      # Generated configs & keys (gitignored)
-```
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `PUID` / `PGID` | `1000` | User and Group IDs. Should match the host user to avoid permission issues with volumes. |
+| `TZ` | `Etc/UTC` | Timezone for the container logs (e.g., `Europe/Madrid`). |
+| `SERVERURL` | `auto` | **Required.** External IP or Domain. The installation script sets this to your Public IP automatically. |
+| `SERVERPORT` | `51820` | External UDP port. Must be open in your Cloud Provider's firewall. |
+| `PEERS` | `1` | Number of peers to generate (e.g., `2`) or a list of names (e.g., `phone,laptop`). |
+| `PEERDNS` | `auto` | DNS server for clients. If unset (`auto`), uses the container's CoreDNS. |
+| `INTERNAL_SUBNET` | `10.13.13.0` | Internal VPN IP range. Change only if it clashes with your local network. |
+| `ALLOWEDIPS` | `0.0.0.0/0` | Defines routing. `0.0.0.0/0` forces **Full Tunnel** (all traffic goes through VPN). |
+| `PERSISTENTKEEPALIVE_PEERS` | `all` | Set to `all` (or a list of peers) to send "ping" packets every 25s to keep the tunnel open. |
+| `LOG_CONFS` | `true` | If `true`, outputs the QR codes to the Docker logs on startup. |
