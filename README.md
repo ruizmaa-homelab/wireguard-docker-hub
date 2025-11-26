@@ -123,7 +123,7 @@ Start the container to generate keys and configuration files. Once the container
 
 ```bash
 ./wireguard.sh start
-while [ ! -f "./config/wg0.conf" ]; do
+while [ ! -f "./config/wg_confs/wg0.conf" ]; do
     sleep 1
 done
 sudo ./scripts/fix-vps-net.sh
