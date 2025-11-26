@@ -1,0 +1,7 @@
+config/
+clients/*
+!clients/*.template
+wireguard/
+**/*.conf
+**/*.key
+**/*.log
