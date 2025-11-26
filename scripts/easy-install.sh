@@ -8,7 +8,7 @@ echo "=============================================="
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$SCRIPT_DIR/.."
 COMPOSE_FILE="$PROJECT_ROOT/docker-compose.yml"
-WG_CONFIG="$PROJECT_ROOT/config/wg0.conf" 
+WG_CONFIG="$PROJECT_ROOT/config/wg_confs/wg0.conf" 
 TIMEOUT=0
 
 # Run base Docker installation

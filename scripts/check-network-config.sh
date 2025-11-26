@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-WG_CONF="$SCRIPT_DIR/../config/wg0.conf"
+WG_CONF="$SCRIPT_DIR/../config/wg_confs/wg0.conf"
 IFACE=$(ip route | grep default | awk '{print $5}' | head -n1)
 
 # Check kernel
