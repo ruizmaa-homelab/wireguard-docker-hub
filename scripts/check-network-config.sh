@@ -4,27 +4,31 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 WG_CONF="$SCRIPT_DIR/../config/wg_confs/wg0.conf"
 IFACE=$(ip route | grep default | awk '{print $5}' | head -n1)
 
-# Check kernel
-echo -n "    Kernel IP Forwarding:             "
-if [ "$(sysctl -n net.ipv4.ip_forward)" -eq 1 ]; then echo "ACTIVE"; else echo "ERROR"; fi
-echo -n "    Kernel Valid Mark:                "
-if [ "$(sysctl -n net.ipv4.conf.all.src_valid_mark)" -eq 1 ]; then echo "ACTIVE"; else echo "ERROR"; fi
-
-# Check MTU in file
-echo -n "    MTU Configuration (1420):         "
-if [ -f "$WG_CONF" ]; then
-    if grep -q "MTU = 1420" "$WG_CONF"; then 
-        echo "OK"
-    else 
-        echo "MISSING (MTU not set)"
+print_status() {
+    # $1 = Message, $2 = Status (0=OK, 1=ERROR)
+    if [ "$2" -eq 0 ]; then
+        printf "    %-40s [ OK  ]\n" "$1"
+    else
+        printf "    %-40s [ERROR]\n" "$1"
     fi
-else
-    echo "ERROR (File not found)"
-fi
+}
 
-# Check iptables rules (firewall)
-echo -n "    Firewall - NAT Rule (Masquerade): "
-if sudo iptables -t nat -C POSTROUTING -o $IFACE -j MASQUERADE 2>/dev/null; then echo "APPLIED"; else echo "ERROR"; fi
+# Kernel
+sysctl_fwd=$(sysctl -n net.ipv4.ip_forward)
+[ "$sysctl_fwd" -eq 1 ] && s1=0 || s1=1
+print_status "Kernel IP Forwarding" $s1
 
-echo -n "    Firewall - Input Rule WireGuard:  "
-if sudo iptables -C INPUT -i wg0 -j ACCEPT 2>/dev/null; then echo "APPLIED"; else echo "ERROR"; fi
+sysctl_mark=$(sysctl -n net.ipv4.conf.all.src_valid_mark)
+[ "$sysctl_mark" -eq 1 ] && s2=0 || s2=1
+print_status "Kernel Valid Mark" $s2
+
+# MTU
+if [ -f "$WG_CONF" ] && grep -q "MTU = 1420" "$WG_CONF"; then s3=0; else s3=1; fi
+print_status "MTU Configuration (1420)" $s3
+
+# Firewall
+if sudo iptables -t nat -C POSTROUTING -o "$IFACE" -j MASQUERADE 2>/dev/null; then s4=0; else s4=1; fi
+print_status "Firewall NAT Rule" $s4
+
+if sudo iptables -C INPUT -i wg0 -j ACCEPT 2>/dev/null; then s5=0; else s5=1; fi
+print_status "Firewall Input Rule" $s5

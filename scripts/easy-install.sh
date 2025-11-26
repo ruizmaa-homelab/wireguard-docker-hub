@@ -35,10 +35,12 @@ fi
 echo ""
 echo ">>> STEP 3: Starting WireGuard and waiting to generate configs..."
 cd "$PROJECT_ROOT"
-sudo docker compose up -d
+sudo docker compose up -d > /dev/null 2>&1
 
+echo -n "    Waiting for config generation"
 while [ ! -f "$WG_CONFIG" ]; do
     sleep 1
+    echo -n "."
     ((TIMEOUT++))
     if [ $TIMEOUT -gt 30 ]; then
         echo "    Error: Timed out waiting for $WG_CONFIG"
@@ -57,7 +59,7 @@ sudo bash "$SCRIPT_DIR/fix-vps-net.sh"
 echo ""
 echo ">>> STEP 5: Finalizing..."
 cd "$PROJECT_ROOT"
-sudo docker compose restart
+sudo docker compose restart > /dev/null 2>&1
 
 # Return ownership of files to the real user (not root)
 if [ -n "$SUDO_USER" ]; then
