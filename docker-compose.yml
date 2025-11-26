@@ -24,7 +24,7 @@ services:
 
       - PEERS=1  # As needed, or devices names <PHONE, LAPTOP, ETC>
       # - PEERDNS=  # Optional custom DNS for the peers
-      - PERSISTENTKEEPALIVE_PEERS=25
+      - PERSISTENTKEEPALIVE_PEERS=all
 
       # - INTERNAL_SUBNET=10.X.X.0
       - ALLOWEDIPS=0.0.0.0/0  # Route all traffic through the VPN
