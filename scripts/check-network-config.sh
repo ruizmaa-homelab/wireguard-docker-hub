@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Colors
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 WG_CONF="$SCRIPT_DIR/../config/wg_confs/wg0.conf"
 IFACE=$(ip route | grep default | awk '{print $5}' | head -n1)
@@ -7,9 +12,9 @@ IFACE=$(ip route | grep default | awk '{print $5}' | head -n1)
 print_status() {
     # $1 = Message, $2 = Status (0=OK, 1=ERROR)
     if [ "$2" -eq 0 ]; then
-        printf "    %-40s [ OK  ]\n" "$1"
+        printf "    %-40s ${GREEN}[ OK  ]${NC}\n" "$1"
     else
-        printf "    %-40s [ERROR]\n" "$1"
+        printf "    %-40s ${RED}[ERROR]${NC}\n" "$1"
     fi
 }
 

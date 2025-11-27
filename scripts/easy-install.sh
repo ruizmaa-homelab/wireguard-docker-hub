@@ -1,9 +1,16 @@
 #!/bin/bash
 set -e
 
-echo "=============================================="
-echo "   WIREGUARD HUB - AUTOMATED INSTALLER        "
-echo "=============================================="
+# Colors
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+echo -e "${CYAN}==============================================${NC}"
+echo -e "${CYAN}   WIREGUARD HUB - AUTOMATED INSTALLER        ${NC}"
+echo -e "${CYAN}==============================================${NC}"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$SCRIPT_DIR/.."
@@ -13,27 +20,27 @@ TIMEOUT=0
 
 # Run base Docker installation
 echo ""
-echo ">>> STEP 1: Installing Docker & System Deps..."
+echo -e "\n${YELLOW}>>> STEP 1: Installing Docker & System Deps...${NC}"
 sudo bash "$SCRIPT_DIR/basic-install.sh"
 
 # Detect and inject public IP
 echo ""
-echo ">>> STEP 2: Configuring Public IP..."
+echo -e "\n${YELLOW}>>> STEP 2: Configuring Public IP...${NC}"
 PUBLIC_IP=$(curl -s ifconfig.me)
 echo "    Detected IP: $PUBLIC_IP"
 
 if [ -f "$COMPOSE_FILE" ]; then
     # Replaces the line containing SERVERURL=... with the real IP
     sed -i "s|SERVERURL=.*|SERVERURL=$PUBLIC_IP|g" "$COMPOSE_FILE"
-    echo "    IP injected into docker-compose.yml"
+    echo -e "    ${GREEN}IP injected into docker-compose.yml${NC}"
 else
-    echo "    Error: docker-compose.yml not found!"
+    echo -e "    ${RED}Error: docker-compose.yml not found!${NC}"
     exit 1
 fi
 
 # Start Docker (to generate configs)
 echo ""
-echo ">>> STEP 3: Starting WireGuard and waiting to generate configs..."
+echo -e "\n${YELLOW}>>> STEP 3: Starting WireGuard (Generating Configs)...${NC}"
 cd "$PROJECT_ROOT"
 sudo docker compose up -d > /dev/null 2>&1
 
@@ -43,21 +50,23 @@ while [ ! -f "$WG_CONFIG" ]; do
     echo -n "."
     ((TIMEOUT++))
     if [ $TIMEOUT -gt 30 ]; then
-        echo "    Error: Timed out waiting for $WG_CONFIG"
+        echo ""
+        echo -e "    ${RED}Error: Timed out waiting for $WG_CONFIG${NC}"
         echo "    Check path (is it wg0.conf or wg_confs/wg0.conf?)"
         exit 1
     fi
 done
-echo "    File generated successfully!"
+echo ""
+echo -e "    ${GREEN}File generated successfully!${NC}"
 
 # Apply network fixes (MTU & iptables)
 echo ""
-echo ">>> STEP 4: Applying Network Fixes (MTU & Firewall)..."
+echo -e "\n${YELLOW}>>> STEP 4: Applying Network Fixes (MTU & Firewall)...${NC}"
 sudo bash "$SCRIPT_DIR/fix-vps-net.sh"
 
 # Finalize and fix permissions
 echo ""
-echo ">>> STEP 5: Finalizing..."
+echo -e "\n${YELLOW}>>> STEP 5: Finalizing...${NC}"
 cd "$PROJECT_ROOT"
 sudo docker compose restart > /dev/null 2>&1
 
@@ -68,7 +77,7 @@ if [ -n "$SUDO_USER" ]; then
 fi
 
 echo ""
-echo "=============================================="
-echo "           INSTALLATION COMPLETE!"
-echo "=============================================="
+echo -e "${GREEN}==============================================${NC}"
+echo -e "${GREEN}           INSTALLATION COMPLETE!             ${NC}"
+echo -e "${GREEN}==============================================${NC}"
 echo ""
