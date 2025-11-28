@@ -18,9 +18,9 @@ echo "      -> Config Path: $WG_CONF"
 
 # Install required packages
 echo -e "    ${YELLOW}[2/7] Installing required packages for network fixes...${NC}"
-sudo apt update -y -qq > /dev/null
-sudo apt upgrade -y -qq > /dev/null
-sudo apt install -y -qq iptables-persistent netfilter-persistent > /dev/null
+sudo apt-get update -y -qq > /dev/null
+sudo apt-get upgrade -y -qq > /dev/null
+sudo apt-get install -y -qq iptables-persistent netfilter-persistent > /dev/null
 
 # Kernel settings
 echo -e "    ${YELLOW}[3/7] Configuring Kernel Forwarding...${NC}"

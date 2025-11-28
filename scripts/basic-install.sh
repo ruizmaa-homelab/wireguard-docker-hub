@@ -14,9 +14,9 @@ COMPOSE_FILE="$PROJECT_ROOT/docker-compose.yml"
 
 # Basic system update and essential package installation
 echo -e "    ${YELLOW}[1/6]${NC} Updating system and installing essential packages..."
-sudo apt update -qq > /dev/null
-sudo apt upgrade -y -qq > /dev/null
-sudo apt install -y -qq nano ca-certificates curl gnupg > /dev/null
+sudo apt-get update -qq > /dev/null
+sudo apt-get upgrade -y -qq > /dev/null
+sudo apt-get install -y -qq nano ca-certificates curl gnupg iputils-ping > /dev/null
 
 # Basic configuration
 echo -e "    ${YELLOW}[2/6]${NC} Configuring terminal..."
@@ -43,8 +43,8 @@ Signed-By: /etc/apt/keyrings/docker.asc
 EOF
 
 echo -e "    ${YELLOW}[4/6]${NC} Installing Docker Engine..."
-sudo apt update -y -qq > /dev/null
-sudo apt install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
+sudo apt-get update -y -qq > /dev/null
+sudo apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
 
 echo -e "    ${YELLOW}[5/6]${NC} Configuring permissions..."
 sudo usermod -aG docker $USER
