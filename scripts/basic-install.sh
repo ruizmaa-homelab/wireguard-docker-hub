@@ -2,6 +2,17 @@
 set -e
 export DEBIAN_FRONTEND=noninteractive
 
+# Detect real user (if not already defined)
+if [ -z "$REAL_USER" ]; then
+    if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
+        REAL_USER="$SUDO_USER"
+    else
+        REAL_USER="$USER"
+    fi
+fi
+REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
+export REAL_USER REAL_HOME
+
 # Colors
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -20,8 +31,12 @@ sudo apt-get install -y -qq apt-utils nano ca-certificates curl gnupg iputils-pi
 
 # Basic configuration
 echo -e "    ${YELLOW}[2/6]${NC} Configuring terminal..."
-if ! grep -q "xterm-256color" ~/.bashrc; then
-    echo 'export TERM=xterm-256color' >> ~/.bashrc
+if [ -n "$REAL_HOME" ]; then
+    BASHRC="$REAL_HOME/.bashrc"
+    if ! grep -q "xterm-256color" "$BASHRC" 2>/dev/null; then
+        echo 'export TERM=xterm-256color' | sudo tee -a "$BASHRC" > /dev/null
+        sudo chown "$REAL_USER:$REAL_USER" "$BASHRC"
+    fi
 fi
 
 # Install Docker
@@ -47,10 +62,10 @@ sudo apt-get update -y -qq > /dev/null
 sudo apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
 
 echo -e "    ${YELLOW}[5/6]${NC} Configuring permissions..."
-sudo usermod -aG docker $USER
+sudo usermod -aG docker "$REAL_USER"
 
 echo -e "    ${YELLOW}[6/6]${NC} Verifying installation..."
-if sg docker -c "docker run --rm hello-world" > /dev/null 2>&1; then
+if sudo -u "$REAL_USER" sg docker -c "docker run --rm hello-world" > /dev/null 2>&1; then
     echo -e "      ${GREEN}-> Docker is running correctly.${NC}"
 else
     echo -e "      ${RED}-> Error: Docker verification failed.${NC}"

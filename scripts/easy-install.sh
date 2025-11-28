@@ -1,6 +1,16 @@
 #!/bin/bash
 set -e
 
+# Detect real user (if not already defined)
+if [ -z "$REAL_USER" ]; then
+    if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
+        REAL_USER="$SUDO_USER"
+    else
+        REAL_USER="$USER"
+    fi
+fi
+export REAL_USER
+
 # Colors
 GREEN='\033[0;32m'
 CYAN='\033[0;36m'
@@ -21,7 +31,7 @@ TIMEOUT=0
 # Run base Docker installation
 echo ""
 echo -e "\n${YELLOW}>>> STEP 1: Installing Docker & System Deps...${NC}"
-sudo bash "$SCRIPT_DIR/basic-install.sh"
+sudo --preserve-env=REAL_USER bash "$SCRIPT_DIR/basic-install.sh"
 
 # Detect and inject public IP
 echo ""
@@ -62,7 +72,7 @@ echo -e "    ${GREEN}File generated successfully!${NC}"
 # Apply network fixes (MTU & iptables)
 echo ""
 echo -e "\n${YELLOW}>>> STEP 4: Applying Network Fixes (MTU & Firewall)...${NC}"
-sudo bash "$SCRIPT_DIR/fix-vps-net.sh"
+sudo --preserve-env=REAL_USER bash "$SCRIPT_DIR/fix-vps-net.sh"
 
 # Finalize and fix permissions
 echo ""
@@ -71,9 +81,9 @@ cd "$PROJECT_ROOT"
 sudo docker compose restart > /dev/null 2>&1
 
 # Return ownership of files to the real user (not root)
-if [ -n "$SUDO_USER" ]; then
-    echo "    Fixing file permissions for user: $SUDO_USER"
-    sudo chown -R "$SUDO_USER:$SUDO_USER" "$PROJECT_ROOT/config"
+if [ -n "$REAL_USER" ]; then
+    echo "    Fixing file permissions for user: $REAL_USER"
+    sudo chown -R "$REAL_USER:$REAL_USER" "$PROJECT_ROOT/config"
 fi
 
 echo ""
