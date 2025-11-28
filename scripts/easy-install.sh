@@ -61,7 +61,7 @@ fi
 echo ""
 echo -e "\n${YELLOW}>>> STEP 3: Starting WireGuard (Generating Configs)...${NC}"
 cd "$PROJECT_ROOT"
-sudo docker compose up -d > /dev/null 2>&1
+sudo docker compose up -d > /dev/null
 
 echo -n "    Waiting for config generation"
 while [ ! -f "$WG_CONFIG" ]; do
@@ -87,7 +87,7 @@ sudo --preserve-env=REAL_USER bash "$SCRIPT_DIR/fix-vps-net.sh"
 echo ""
 echo -e "\n${YELLOW}>>> STEP 5: Finalizing...${NC}"
 cd "$PROJECT_ROOT"
-sudo docker compose restart > /dev/null 2>&1
+sudo docker compose restart > /dev/null
 
 # Return ownership of files to the real user (not root)
 if [ -n "$REAL_USER" ]; then

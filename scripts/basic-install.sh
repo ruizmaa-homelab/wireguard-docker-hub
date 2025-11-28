@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 export DEBIAN_FRONTEND=noninteractive
+export DEBCONF_NONINTERACTIVE_SEEN=true
+
+NO_INTERACTIVE_APT="DEBIAN_FRONTEND=noninteractive apt-get"
 
 # Detect real user (if not already defined)
 if [ -z "$REAL_USER" ]; then
@@ -25,9 +28,10 @@ COMPOSE_FILE="$PROJECT_ROOT/docker-compose.yml"
 
 # Basic system update and essential package installation
 echo -e "    ${YELLOW}[1/6]${NC} Updating system and installing essential packages..."
-sudo apt-get update -qq > /dev/null
-sudo apt-get upgrade -y -qq > /dev/null
-sudo apt-get install -y -qq apt-utils nano ca-certificates curl gnupg iputils-ping > /dev/null
+sudo $NO_INTERACTIVE_APT update -qq > /dev/null
+sudo $NO_INTERACTIVE_APT install -y -qq apt-utils 2>/dev/null || true
+sudo $NO_INTERACTIVE_APT upgrade -y -qq > /dev/null
+sudo $NO_INTERACTIVE_APT install -y -qq nano ca-certificates curl gnupg iputils-ping > /dev/null
 
 # Basic configuration
 echo -e "    ${YELLOW}[2/6]${NC} Configuring terminal..."
@@ -58,8 +62,8 @@ Signed-By: /etc/apt/keyrings/docker.asc
 EOF
 
 echo -e "    ${YELLOW}[4/6]${NC} Installing Docker Engine..."
-sudo apt-get update -y -qq > /dev/null
-sudo apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
+sudo $NO_INTERACTIVE_APT update -y -qq > /dev/null
+sudo $NO_INTERACTIVE_APT install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
 
 echo -e "    ${YELLOW}[5/6]${NC} Configuring permissions..."
 sudo usermod -aG docker "$REAL_USER"
