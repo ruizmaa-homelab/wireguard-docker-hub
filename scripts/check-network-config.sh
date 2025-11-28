@@ -28,7 +28,7 @@ sysctl_mark=$(sysctl -n net.ipv4.conf.all.src_valid_mark)
 print_status "Kernel Valid Mark" $s2
 
 # MTU
-if [ -f "$WG_CONF" ] && grep -q "MTU = 1420" "$WG_CONF"; then s3=0; else s3=1; fi
+if [ -f "$WG_CONF" ] && grep -qE "MTU\s*=\s*1420" "$WG_CONF"; then s3=0; else s3=1; fi
 print_status "MTU Configuration (1420)" $s3
 
 # Firewall

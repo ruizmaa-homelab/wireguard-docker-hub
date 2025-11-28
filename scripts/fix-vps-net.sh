@@ -33,7 +33,7 @@ sudo sysctl -p /etc/sysctl.d/99-wireguard-optimize.conf > /dev/null
 # Fix MTU
 echo -e "    ${YELLOW}[4/7] Checking MTU configuration...${NC}"
 if [ -f "$WG_CONF" ]; then
-    if grep -q "MTU =" "$WG_CONF"; then
+    if grep -qE "MTU\s*=" "$WG_CONF"; then
         echo "      -> MTU was already configured."
     else
         echo "      -> Injecting MTU = 1420 into $WG_CONF..."
