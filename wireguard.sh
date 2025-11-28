@@ -18,6 +18,9 @@ case "$1" in
     logs)
         docker compose logs -f
         ;;
+    handshake)
+        docker exec -it wireguard wg show
+        ;;
     qr)
         if [ -z "$2" ]; then
             echo "Error: Specify the peer number. E.g.: ./wireguard.sh qr 1"
@@ -35,7 +38,7 @@ case "$1" in
         fi
         ;;
     *)
-        echo "Usage: $0 {start|stop|restart|status|logs|qr <num>|conf-file <num>}"
+        echo "Usage: $0 {start|stop|restart|status|logs|handshake|qr <num>|conf-file <num>}"
         exit 1
         ;;
 esac
