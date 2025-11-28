@@ -182,3 +182,7 @@ The WireGuard interface is configured via environment variables in `docker-compo
 | `ALLOWEDIPS` | `0.0.0.0/0` | Defines routing. `0.0.0.0/0` forces **Full Tunnel** (all traffic goes through VPN). |
 | `PERSISTENTKEEPALIVE_PEERS` | `all` | Set to `all` (or a list of peers) to send "ping" packets every 25s to keep the tunnel open. |
 | `LOG_CONFS` | `true` | If `true`, outputs the QR codes to the Docker logs on startup. |
+
+> [!NOTE]
+> The installer automatically updates `PUID`/`PGID` to match your system user.  
+> If installing manually, set them to `id -u` / `id -g` to avoid permission issues.
