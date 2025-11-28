@@ -18,9 +18,9 @@ echo "      -> Config Path: $WG_CONF"
 
 # Install required packages
 echo -e "    ${YELLOW}[2/7] Installing required packages for network fixes...${NC}"
-sudo apt update -y -qq > /dev/null
-sudo apt upgrade -y -qq > /dev/null
-sudo apt install -y -qq iptables-persistent netfilter-persistent > /dev/null
+sudo apt-get update -y -qq > /dev/null
+sudo apt-get upgrade -y -qq > /dev/null
+sudo apt-get install -y -qq iptables-persistent netfilter-persistent > /dev/null
 
 # Kernel settings
 echo -e "    ${YELLOW}[3/7] Configuring Kernel Forwarding...${NC}"
@@ -33,11 +33,11 @@ sudo sysctl -p /etc/sysctl.d/99-wireguard-optimize.conf > /dev/null
 # Fix MTU
 echo -e "    ${YELLOW}[4/7] Checking MTU configuration...${NC}"
 if [ -f "$WG_CONF" ]; then
-    if grep -q "MTU =" "$WG_CONF"; then
+    if grep -qE "MTU\s*=" "$WG_CONF"; then
         echo "      -> MTU was already configured."
     else
         echo "      -> Injecting MTU = 1420 into $WG_CONF..."
-        sudo sed -i '/\[Interface\]/a MTU = 1420' $WG_CONF
+        sudo sed -i '/\[Interface\]/a MTU = 1420' "$WG_CONF"
     fi
 else
     echo -e "      ${RED}-> ERROR: $WG_CONF not found. Start the container first.${NC}"
@@ -47,18 +47,21 @@ fi
 
 # NAT (Masquerade) rules
 echo -e "    ${YELLOW}[5/7] Applying Firewall rules...${NC}"
+sudo iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited 2> /dev/null || true
+
 add_rule() {
     if ! sudo iptables -C "$@" 2>/dev/null; then
         sudo iptables -I "$@"
     fi
 }
 
+add_rule INPUT -p udp --dport 51820 -j ACCEPT
 add_rule INPUT -i wg0 -j ACCEPT
 add_rule FORWARD -i wg0 -j ACCEPT
 add_rule FORWARD -o wg0 -j ACCEPT
 
-if ! sudo iptables -t nat -C POSTROUTING -o $IFACE -j MASQUERADE 2>/dev/null; then
-    sudo iptables -t nat -A POSTROUTING -o $IFACE -j MASQUERADE
+if ! sudo iptables -t nat -C POSTROUTING -o "$IFACE" -j MASQUERADE 2>/dev/null; then
+    sudo iptables -t nat -A POSTROUTING -o "$IFACE" -j MASQUERADE
     echo "      -> Added NAT Masquerade rule."
 fi
 

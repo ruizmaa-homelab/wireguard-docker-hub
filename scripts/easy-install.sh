@@ -48,7 +48,7 @@ echo -n "    Waiting for config generation"
 while [ ! -f "$WG_CONFIG" ]; do
     sleep 1
     echo -n "."
-    ((TIMEOUT++))
+    TIMEOUT=$((TIMEOUT+1))
     if [ $TIMEOUT -gt 30 ]; then
         echo ""
         echo -e "    ${RED}Error: Timed out waiting for $WG_CONFIG${NC}"
@@ -80,4 +80,10 @@ echo ""
 echo -e "${GREEN}==============================================${NC}"
 echo -e "${GREEN}           INSTALLATION COMPLETE!             ${NC}"
 echo -e "${GREEN}==============================================${NC}"
+echo ""
+echo -e "${CYAN}IMPORTANT:${NC}"
+echo -e "To use Docker without 'sudo' and fix terminal colors,"
+echo -e "please log out and log back in. Run this:"
+echo ""
+echo -e "    ${YELLOW}exit${NC}"
 echo ""

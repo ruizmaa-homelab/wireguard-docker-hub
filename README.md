@@ -70,6 +70,7 @@ Connect via SSH, clone this repository and enter the directory.
 ```bash
 git clone https://github.com/ruizmaa-homelab/docker-wireguard-hub.git
 cd docker-wireguard-hub
+chmod +x wireguard.sh scripts/*.sh
 ```
 
 ### 3. Choose one of the following installation methods:
@@ -80,6 +81,13 @@ Recommended for fresh VPS installations. This script handles the full lifecycle:
 
 ```bash
 sudo ./scripts/easy-install.sh
+```
+
+Once the installation finishes, you must log out and log back in to apply Docker permissions.
+
+```bash
+exit
+ssh <USSER>@<IP>
 ```
 
 Now you can just connect your devices with the QR code.
@@ -122,8 +130,10 @@ nano docker-compose.yml
 
 Start the container to generate keys and configuration files. Once the container is up and the configuration files are created, run this script to patch the host kernel settings, MTU, and Firewall rules.
 
+> `sudo` is used here because the group permissions require a session refresh (see [Step 4](#4-refresh-session)).
+
 ```bash
-./wireguard.sh start
+sudo ./wireguard.sh start
 
 # Wait for config generation
 while [ ! -f "./config/wg_confs/wg0.conf" ]; do
@@ -135,7 +145,16 @@ sudo ./scripts/fix-vps-net.sh
 ./wireguard.sh restart
 ```
 
-##### 4. Connect your devices
+##### 4. Refresh Session
+
+To apply Docker permissions (use docker without sudo) and terminal fixes, you must log out and log back in.
+
+```bash
+exit
+ssh <USSER>@<IP>
+```
+
+##### 5. Connect your devices
 
 Finally you can connect your devices.
 
