@@ -20,6 +20,9 @@ echo "      -> Config Path: $WG_CONF"
 echo -e "    ${YELLOW}[2/7] Installing required packages for network fixes...${NC}"
 sudo apt-get update -y -qq > /dev/null
 sudo apt-get upgrade -y -qq > /dev/null
+
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
 sudo apt-get install -y -qq iptables-persistent netfilter-persistent > /dev/null
 
 # Kernel settings

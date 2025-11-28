@@ -19,7 +19,7 @@ COMPOSE_FILE="$PROJECT_ROOT/docker-compose.yml"
 echo -e "    ${YELLOW}[1/6]${NC} Updating system and installing essential packages..."
 sudo apt-get update -qq > /dev/null
 sudo apt-get upgrade -y -qq > /dev/null
-sudo apt-get install -y -qq nano ca-certificates curl gnupg iputils-ping > /dev/null
+sudo apt-get install -y -qq apt-utils nano ca-certificates curl gnupg iputils-ping > /dev/null
 
 # Basic configuration
 echo -e "    ${YELLOW}[2/6]${NC} Configuring terminal for $REAL_USER..."
