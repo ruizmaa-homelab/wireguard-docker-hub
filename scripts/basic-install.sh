@@ -8,6 +8,9 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
+REAL_USER="${SUDO_USER:-$USER}"
+REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$SCRIPT_DIR/.."
 COMPOSE_FILE="$PROJECT_ROOT/docker-compose.yml"
@@ -19,9 +22,10 @@ sudo apt-get upgrade -y -qq > /dev/null
 sudo apt-get install -y -qq nano ca-certificates curl gnupg iputils-ping > /dev/null
 
 # Basic configuration
-echo -e "    ${YELLOW}[2/6]${NC} Configuring terminal..."
-if ! grep -q "xterm-256color" ~/.bashrc; then
-    echo 'export TERM=xterm-256color' >> ~/.bashrc
+echo -e "    ${YELLOW}[2/6]${NC} Configuring terminal for $REAL_USER..."
+if ! grep -q "xterm-256color" "$REAL_HOME/.bashrc"; then
+    echo 'export TERM=xterm-256color' >> "$REAL_HOME/.bashrc"
+    chown "$REAL_USER:$REAL_USER" "$REAL_HOME/.bashrc"
 fi
 
 # Install Docker
@@ -46,8 +50,8 @@ echo -e "    ${YELLOW}[4/6]${NC} Installing Docker Engine..."
 sudo apt-get update -y -qq > /dev/null
 sudo apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/null
 
-echo -e "    ${YELLOW}[5/6]${NC} Configuring permissions..."
-sudo usermod -aG docker $USER
+echo -e "    ${YELLOW}[5/6]${NC} Configuring Docker permissions for $REAL_USER..."
+sudo usermod -aG docker "$REAL_USER"
 
 echo -e "    ${YELLOW}[6/6]${NC} Verifying installation..."
 if sg docker -c "docker run --rm hello-world" > /dev/null 2>&1; then
