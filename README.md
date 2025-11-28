@@ -142,7 +142,7 @@ done
 
 # Apply fixes
 sudo ./scripts/fix-vps-net.sh
-./wireguard.sh restart
+sudo ./wireguard.sh restart
 ```
 
 ##### 4. Refresh Session
