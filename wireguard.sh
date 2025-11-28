@@ -21,6 +21,7 @@ case "$1" in
     qr)
         if [ -z "$2" ]; then
             echo "Error: Specify the peer number. E.g.: ./wireguard.sh qr 1"
+            exit 1
         else
             docker exec -it wireguard /app/show-peer "$2"
         fi
@@ -28,12 +29,13 @@ case "$1" in
     conf-file)
         if [ -z "$2" ]; then
             echo "Error: Specify the peer number. E.g.: ./wireguard.sh conf-file 1"
+            exit 1
         else
             docker exec -it wireguard cat /config/peer"$2"/peer"$2".conf
         fi
         ;;
     *)
-        echo "Uso: $0 {start|stop|restart|status|logs|qr <num>|conf-file <num>}"
+        echo "Usage: $0 {start|stop|restart|status|logs|qr <num>|conf-file <num>}"
         exit 1
         ;;
 esac
