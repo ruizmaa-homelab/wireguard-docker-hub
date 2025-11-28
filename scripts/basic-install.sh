@@ -8,8 +8,10 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-REAL_USER="${SUDO_USER:-$USER}"
-REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
+if [ -z "$REAL_USER" ]; then
+    REAL_USER="${SUDO_USER:-$USER}"
+    REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
+fi
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$SCRIPT_DIR/.."
