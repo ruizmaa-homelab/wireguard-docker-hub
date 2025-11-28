@@ -37,3 +37,6 @@ print_status "Firewall NAT Rule" $s4
 
 if sudo iptables -C INPUT -i wg0 -j ACCEPT 2>/dev/null; then s5=0; else s5=1; fi
 print_status "Firewall Input Rule" $s5
+
+if sudo iptables -C INPUT -p udp --dport 51820 -j ACCEPT 2>/dev/null; then s6=0; else s6=1; fi
+print_status "Firewall UDP 51820 Open" $s6
