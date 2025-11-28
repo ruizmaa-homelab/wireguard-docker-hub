@@ -18,13 +18,6 @@ COMPOSE_FILE="$PROJECT_ROOT/docker-compose.yml"
 WG_CONFIG="$PROJECT_ROOT/config/wg_confs/wg0.conf" 
 TIMEOUT=0
 
-export REAL_USER="${SUDO_USER:-$USER}"
-export REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
-
-if [ "$REAL_USER" == "root" ]; then
-    echo "    ${RED}WARNING: Running as root directly. Permissions might be set for root.${NC}"
-fi
-
 # Run base Docker installation
 echo ""
 echo -e "\n${YELLOW}>>> STEP 1: Installing Docker & System Deps...${NC}"
