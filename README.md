@@ -68,8 +68,8 @@ Access your VPS provider's firewall/security settings and:
 Connect via SSH, clone this repository and enter the directory.
 
 ```bash
-git clone https://github.com/ruizmaa-homelab/docker-wireguard-hub.git
-cd docker-wireguard-hub
+git clone https://github.com/ruizmaa-homelab/wireguard-docker-hub.git
+cd wireguard-docker-hub
 chmod +x wireguard.sh scripts/*.sh
 ```
 
