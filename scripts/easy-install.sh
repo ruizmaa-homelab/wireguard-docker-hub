@@ -11,6 +11,9 @@ if [ -z "$REAL_USER" ]; then
 fi
 export REAL_USER
 
+REAL_UID=$(id -u "$REAL_USER")
+REAL_GID=$(id -g "$REAL_USER")
+
 # Colors
 GREEN='\033[0;32m'
 CYAN='\033[0;36m'
@@ -35,14 +38,20 @@ sudo --preserve-env=REAL_USER bash "$SCRIPT_DIR/basic-install.sh"
 
 # Detect and inject public IP
 echo ""
-echo -e "\n${YELLOW}>>> STEP 2: Configuring Public IP...${NC}"
+echo -e "\n${YELLOW}>>> STEP 2: Configuring Public IP & Permissions...${NC}"
 PUBLIC_IP=$(curl -s ifconfig.me)
 echo "    Detected IP: $PUBLIC_IP"
+echo "    Using REAL_USER=$REAL_USER (UID=$REAL_UID, GID=$REAL_GID)"
 
 if [ -f "$COMPOSE_FILE" ]; then
-    # Replaces the line containing SERVERURL=... with the real IP
+    # Replaces SERVERURL
     sed -i "s|SERVERURL=.*|SERVERURL=$PUBLIC_IP|g" "$COMPOSE_FILE"
-    echo -e "    ${GREEN}IP injected into docker-compose.yml${NC}"
+
+    # Replaces PUID/PGID if present
+    sed -i "s/PUID=[0-9]\+/PUID=$REAL_UID/" "$COMPOSE_FILE"
+    sed -i "s/PGID=[0-9]\+/PGID=$REAL_GID/" "$COMPOSE_FILE"
+
+    echo -e "    ${GREEN}IP and PUID/PGID injected into docker-compose.yml${NC}"
 else
     echo -e "    ${RED}Error: docker-compose.yml not found!${NC}"
     exit 1
@@ -52,7 +61,7 @@ fi
 echo ""
 echo -e "\n${YELLOW}>>> STEP 3: Starting WireGuard (Generating Configs)...${NC}"
 cd "$PROJECT_ROOT"
-sudo docker compose up -d > /dev/null 2>&1
+sudo docker compose up -d > /dev/null
 
 echo -n "    Waiting for config generation"
 while [ ! -f "$WG_CONFIG" ]; do
@@ -78,7 +87,7 @@ sudo --preserve-env=REAL_USER bash "$SCRIPT_DIR/fix-vps-net.sh"
 echo ""
 echo -e "\n${YELLOW}>>> STEP 5: Finalizing...${NC}"
 cd "$PROJECT_ROOT"
-sudo docker compose restart > /dev/null 2>&1
+sudo docker compose restart > /dev/null
 
 # Return ownership of files to the real user (not root)
 if [ -n "$REAL_USER" ]; then
