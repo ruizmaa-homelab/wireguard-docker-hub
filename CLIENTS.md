@@ -72,6 +72,14 @@ sudo chmod 600 /etc/wireguard/wg0.conf
 
 ### 3. Enable and start the tunnel
 
+WireGuard configurations might include a DNS= line.
+
+On Debian/Ubuntu, this requires the resolvconf package to be installed, without it, wg-quick may fail to bring the interface up.
+
+```bash
+sudo apt install resolvconf
+```
+
 ```bash
 sudo systemctl enable wg-quick@wg0
 sudo systemctl start wg-quick@wg0
