@@ -32,7 +32,8 @@ A network-wide ad blocking software acting as a DNS sinkhole.
 
 #### Configuration
 
-- Web interface: http://<SERVER_IP>:8080/admin
+- Web interface: `http://<SERVER_IP>:8080/admin`
+- Persistent data (Docker volume): `pihole_etc` (mounted at `/etc/pihole`)
 
 ##### Change the password
 

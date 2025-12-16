@@ -12,7 +12,10 @@ services:
       # - WEBPASSWORD=<your_password>  # Can be changed with pihole pihole -a -p
       - FTLCONF_dns_listeningMode='ALL'  # Listen on all interfaces
     volumes:
-      - './etc-pihole:/etc/pihole'
-      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+      - pihole_etc:/etc/pihole
     cap_add:
       - NET_ADMIN
+
+volumes:
+  pihole_etc:
+    name: pihole_etc
