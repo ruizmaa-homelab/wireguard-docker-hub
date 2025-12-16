@@ -52,7 +52,7 @@ Configure your **Upstream DNS Servers** and **Interface Settings** (allow traffi
 
 1. Go to `Settings > DNS`
 2. Go to `Upstream DNS Servers`, select your preferred provider
-3. Go to `Interface settings`, select Potentially dangerous options > ` Permit all origins`
+3. Go to `Interface settings`, select Potentially dangerous options > `Permit all origins`
 4. Save
 
 Update **Blocklists** (Gravity) to ensure Pi-hole knows which ads to block:
@@ -75,13 +75,13 @@ nslookup flurry.com
 You should read something like this:
 
 ```text
-Server:		127.0.0.53
-Address:	127.0.0.53#53
+Server:     127.0.0.53
+Address:    127.0.0.53#53
 
 Non-authoritative answer:
-Name:	flurry.com
+Name:   flurry.com
 Address: 0.0.0.0
-Name:	flurry.com
+Name:   flurry.com
 Address: ::
 
 ```
@@ -95,12 +95,12 @@ nslookup google.com
 This should show something like this:
 
 ```text
-Server:		127.0.0.53
-Address:	127.0.0.53#53
+Server:     127.0.0.53
+Address:    127.0.0.53#53
 
 Non-authoritative answer:
-Name:	google.com
+Name:   google.com
 Address: 142.250.184.174
-Name:	google.com
+Name:   google.com
 Address: 2a00:1450:4003:803::200e
 ```
