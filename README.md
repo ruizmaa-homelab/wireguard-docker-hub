@@ -44,9 +44,17 @@ graph TD
 > Unlike standard Docker deployments, this project runs WireGuard in `network_mode: host`.
 >
 > This is a deliberate choice to:
+>
 > - **Ensure Stability:** Bypass UDP Checksum Offloading bugs common in KVM/Oracle Cloud.
 > - **Maximize Performance**
 > - **Preserve Real IPs**
+
+## Related documentation
+
+This guide handles the **VPS Hub** (the central node). For the other parts of the infrastructure shown above, check the specific guides:
+
+- **[💻📱 External client setup guide](CLIENTS.md):** How to connect your external devices (Phone, Laptop...) to this VPN.
+- **[🏠👾 Home server services](SERVICES.md):** Guide for self-hosted serviccies and applications running on your home server.
 
 ## Prerequisites
 
