@@ -81,7 +81,7 @@ cd wireguard-docker-hub
 chmod +x wireguard.sh scripts/*.sh
 ```
 
-### 3. Choose one of the following installation methods:
+### 3. Choose one of the following installation methods
 
 #### A: 🚀 Quick Start (automated)
 
