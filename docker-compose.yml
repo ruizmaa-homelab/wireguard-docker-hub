@@ -22,8 +22,8 @@ services:
       - SERVERURL=auto  # <your_public_ip_or_domain>
       - SERVERPORT=51820  # Standard WireGuard port
 
-      - PEERS=1  # As needed, or devices names <PHONE, LAPTOP, ETC>
-      - PEERDNS=1.1.1.1, 8.8.8.8  # Optional custom DNS for the peers
+      - PEERS=1  # As needed, or devices names <PHONE,LAPTOP,ETC>
+      - PEERDNS=1.1.1.1,8.8.8.8  # Optional custom DNS for the peers
       - PERSISTENTKEEPALIVE_PEERS=all
 
       # - INTERNAL_SUBNET=10.X.X.0
