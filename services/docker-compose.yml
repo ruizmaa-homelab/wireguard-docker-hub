@@ -8,9 +8,9 @@ services:
       - "53:53/udp"
       - "8080:80"
     environment:
-      - TZ=Etc/UTC  # <your_time_zone>
-      # - WEBPASSWORD=<your_password>  # Can be changed with pihole pihole -a -p
-      - FTLCONF_dns_listeningMode='ALL'  # Listen on all interfaces
+      TZ: Etc/UTC  # <your_time_zone>
+      # WEBPASSWORD: <your_password>  # Can be changed with pihole pihole -a -p
+      FTLCONF_dns_listeningMode: 'ALL'  # Listen on all interfaces
     volumes:
       - pihole_etc:/etc/pihole
     cap_add:
