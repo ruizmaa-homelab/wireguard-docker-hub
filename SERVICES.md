@@ -30,12 +30,12 @@ docker compose ps
 
 A network-wide ad blocking software acting as a DNS sinkhole.
 
-#### Configuration
+#### Pi-hole **Configuration**
 
 - Web interface: `http://<SERVER_IP>:8080/admin`
 - Persistent data (Docker volume): `pihole_etc` (mounted at `/etc/pihole`)
 
-##### Change the password
+##### Pi-hole **Password**
 
 You can set your own password by editing the docker compose, just uncomment the `WEBPASSWORD` environment variable and write your own password.
 
@@ -45,7 +45,7 @@ If you don't specify your password, it will be generated randomly, the easiest w
 docker exec -it pihole pihole setpassword
 ```
 
-##### Settings
+#### Pi-hole **Start**
 
 Go to `http://<SERVER_IP>:8080/admin` and log in with your password.
 
@@ -65,7 +65,7 @@ Update **Blocklists** (Gravity) to ensure Pi-hole knows which ads to block:
 >
 >`docker exec -it pihole pihole -g`
 
-#### Check if it's working
+#### Check if Pi-hole working
 
 Check if unwanted traffic is blocked:
 
@@ -110,17 +110,17 @@ Address: 2a00:1450:4003:803::200e
 
 A continuous file synchronization program.
 
-#### Configuration
+#### Syncthing **Configuration**
 
 - Web interface: `http://<SERVER_IP>:8384`
 
-##### Change the password
+##### Syncthing **Password**
 
 By default, the Syncthing web interface is accessible without any credentials, so is highly recomended to set a username and password.
 
 Open the web UI at `http://<SERVER_IP>:8384` and go to: `Actions > Settings > GUI > Set user/password`. Here add your usser name and password. It's also recommended to activate the option `Use HTTPS for GUI`.
 
-#### Start
+#### Syncthing **Start**
 
 Once it's runing, you can start syncing files by following these steps:
 
