@@ -105,3 +105,42 @@ Address: 142.250.184.174
 Name:   google.com
 Address: 2a00:1450:4003:803::200e
 ```
+
+### [Syncthing](https://hub.docker.com/r/linuxserver/syncthing)
+
+A continuous file synchronization program.
+
+#### Configuration
+
+- Web interface: `http://<SERVER_IP>:8384`
+
+##### Change the password
+
+By default, the Syncthing web interface is accessible without any credentials, so is highly recomended to set a username and password.
+
+Open the web UI at `http://<SERVER_IP>:8384` and go to: `Actions > Settings > GUI > Set user/password`. Here add your usser name and password. It's also recommended to activate the option `Use HTTPS for GUI`.
+
+#### Start
+
+Once it's runing, you can start syncing files by following these steps:
+
+> Following the `docker-compose.yml` file, the example file paths used in `volumes` are `/path/to/data1:/data1`
+
+1. **Map the folders:** syncthing synchronizes entire folders, not individual files.
+    - **Host:** place your files in the local directory (`/path/to/data1`)
+    - **Container:** in the Web UI, refer to this folder using the internal path defined in your Docker Compose (`/data1`)
+
+2. **Add Folder in Web UI:**
+    1. Open the web UI at `http://<SERVER_IP>:8384`
+    2. Click  `Add folder`
+    3. `Folder path`: Enter the container path (`/data1`).
+    4. Go to `Sharing` tab and check the devices you want to sync with
+
+3. **Link devices:**
+    1. Get the `Device ID` from your phone/laptop.
+    2. In the MiniPC Web UI, click `Add Remote Device` and paste the ID.
+    3. Accept the connection on both ends.
+
+Any file moved into the local folder on your MiniPC will automatically appear on the linked devices.
+
+Changes are bidirectional: if you edit or delete a file on one device, it will be updated on all others.
